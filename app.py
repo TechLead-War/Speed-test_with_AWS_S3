@@ -20,7 +20,8 @@ import boto3
 import time
 
 from constants import HTML, Constants
-from managers.botocore import get_credentials, upload_to_buckets, create_bucket, get_bucket_list, create_folders
+from managers.botocore import get_credentials, upload_to_buckets, create_bucket, get_bucket_list, create_folders, \
+    download_file, delete_file
 
 app = Flask(__name__)
 app.debug = True
@@ -82,7 +83,24 @@ def create_folder():
     return create_folders(Constants.bucket_name, folders)
 
 
+@app.route("/download_file", methods=["GET"])
+def download_files():
+    return jsonify(download_file())
+
+
+@app.route("/delete_file", methods=["GET"])
+def delete_files():
+    return jsonify(delete_file())
+
+
+@app.route("/delete_bucket", methods=["GET"])
+def delete_bucket():
+    return jsonify((delete_bucket()))
+
+
 if __name__ == '__main__':
     app.run(debug=True)
+    
+    
 # document this code very well for future use
 # pre-assigned url as well

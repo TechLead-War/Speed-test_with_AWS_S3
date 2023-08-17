@@ -121,3 +121,79 @@ def create_folders(target_bucket: str, folder_structure):
     except ClientError as e:
         error_message = str(e)
         return False, error_message
+
+
+def download_file():
+    # instance of client
+    client = boto3.client('s3')
+
+    # set variables
+    bucket = Constants.bucket_name
+    file = Constants.file
+
+    curr_path = os.getcwd()
+    file_path = os.path.join(curr_path, 'downloads', file)
+
+    # Measure the start time
+    start_time = time.time()
+
+    # object method to download file
+    client.download_file(
+        Bucket=bucket,
+        Key=file,
+        Filename=file_path
+    )
+    # Calculate the time taken
+    end_time = time.time()
+    time_taken = end_time - start_time
+    average_speed = os.path.getsize(file_path)/time_taken
+
+    # list the content of Downloaded dir
+    downloads_dir = os.path.join(curr_path, 'downloads')
+    downloads_files = []
+    for root, dirs, files in os.walk(downloads_dir):
+        for filename in files:
+            print(filename)
+            downloads_files.append(filename)
+    return {
+        "filename": downloads_files,
+        "status": "success",
+        "time_taken": time_taken,
+        "average_speed": average_speed
+    }
+
+
+def delete_file():
+    # instance of client
+    client = boto3.client('s3')
+
+    # set variables
+    bucket = Constants.bucket_name
+    file = Constants.file
+
+    curr_path = os.getcwd()
+    file_path = os.path.join(curr_path, 'downloads', file)
+
+    client.delete_object(
+        Bucket=bucket,
+        Key=file_path
+    )
+
+
+def delete_bucket():
+    # instance of client
+    client = boto3.client('s3')
+
+    # set variables
+    bucket = Constants.bucket_name
+    file = Constants.file
+
+    curr_path = os.getcwd()
+    file_path = os.path.join(curr_path, 'downloads', file)
+
+    client.delete_object(
+        Bucket=bucket
+    )
+    return {
+        "status": "success"
+    }
